@@ -1,29 +1,30 @@
-const express = require('express');
+import express from 'express';
+import {getWorkouts, getWorkout, createWorkout} from '../database.js';
 const router = express.Router();
 
-// GET all workouts
-router.get('/', (req, res) => {
-    res.json({msg: 'GET all workouts'});
+router.get('/', async (req, res) => {
+    const workouts = await getWorkouts();
+    res.send(workouts);
 });
 
-// GET a single workout
-router.get('/:id', (req, res) => {
-    res.json({msg: 'GET a single workout'});
+router.get('/:id', async (req, res) => {
+    const id = req.params.id;
+    const workout = await getWorkout(id);
+    res.send(workout);
 });
 
-// POST a new workout
-router.post('/', (req, res) => {
-    res.json({msg: 'POST a new workout'}); 
+router.post('/', async (req, res) => {
+    const { title, contents } = req.body;
+    const workout = await createWorkout(title, contents);
+    res.status(201).send(workout);
 });
 
-// DELETE a workout
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res) => {
     res.json({msg: 'DELETE a workout'}); 
 });
 
-// PATCH a workout
-router.patch('/:id', (req, res) => {
+router.patch('/:id', async (req, res) => {
     res.json({msg: 'PATCH a workout'}); 
 });
 
-module.exports = router;
+export default router;
