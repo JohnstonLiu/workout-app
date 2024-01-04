@@ -24,14 +24,33 @@ export async function getSplit(id) {
     return rows[0];
 }
 
-export async function createSplit(title, contents) {
+export async function postSplit(title, contents) {
     const [result] = await pool.query(`
     INSERT INTO splits (title, contents)
     VALUES (?, ?)
     `, [title, contents])
     const id = result.insertId;
     return getSplit(id);
-};
+}
+
+export async function deleteSplit(id) {
+    const split = getSplit(id);
+    await pool.query(`
+    DELETE
+    FROM splits
+    WHERE id = ?
+    `, [id]);
+    return split;
+}
+
+export async function patchSplit(id, title, contents) {
+    await pool.query(`
+    UPDATE splits
+    SET title = ?, contents = ?
+    where id = ?
+    `, [title, contents, id]);
+    return getSplit(id);
+}
 
 export async function getWorkouts() {
     const [rows] = await pool.query("SELECT * FROM workouts");
@@ -47,7 +66,7 @@ export async function getWorkout(id) {
     return rows[0];
 }
 
-export async function createWorkout(title, contents) {
+export async function postWorkout(title, contents) {
     const [result] = await pool.query(`
     INSERT INTO workouts (title, contents)
     VALUES (?, ?)

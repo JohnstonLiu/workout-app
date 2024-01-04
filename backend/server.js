@@ -1,10 +1,12 @@
 import dotenv from 'dotenv';
-dotenv.config();
+import cors from 'cors';
 import express from 'express';
 import workoutRouter from './routes/workouts.js';
 import splitRouter from './routes/splits.js';
 
+dotenv.config();
 const app = express();
+app.use(cors());
 
 app.use(express.json());
 app.use((err, req, res, next) => {

@@ -1,5 +1,5 @@
 import express from 'express';
-import {getWorkouts, getWorkout, createWorkout} from '../database.js';
+import {getWorkouts, getWorkout, postWorkout} from '../database.js';
 const router = express.Router();
 
 router.get('/', async (req, res) => {
