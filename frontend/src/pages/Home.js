@@ -19,13 +19,16 @@ const Home = () => {
 
     return (
         <div className="home">
-            <div className="splits">
-                {splits && splits.map((split) => (
-                    <SplitMeta key={split.id} split = { split } />
-                ))}
+            <h2>Your Workout Splits</h2>
+            <div className="home-splits">
+                <div className="splits">
+                    {splits && splits.map((split) => (
+                        <SplitMeta key={split.id} split = { split } />
+                    ))}
+                </div>
             </div>
         </div>
-    )
+    );
 };
 
 export default Home;

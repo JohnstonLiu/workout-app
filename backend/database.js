@@ -52,25 +52,66 @@ export async function patchSplit(id, title, contents) {
     return getSplit(id);
 }
 
-export async function getWorkouts() {
-    const [rows] = await pool.query("SELECT * FROM workouts");
-    return rows;
-}
-
-export async function getWorkout(id) {
+export async function getWorkout(workout_id) {
     const [rows] = await pool.query(`
     SELECT *
-    FROM workouts 
+    FROM workouts
     WHERE id = ?
-    `, [id]);
+    `, [workout_id]);
     return rows[0];
 }
 
-export async function postWorkout(title, contents) {
+export async function getWorkouts(split_day_id) {
+    const [rows] = await pool.query(`
+    SELECT *
+    FROM workouts
+    WHERE split_day_id = ?
+    `, [split_day_id]);
+    return rows;
+}
+
+export async function postWorkout(exercise_id, set_count, rep_lb, rep_ub, split_day_id) {
     const [result] = await pool.query(`
-    INSERT INTO workouts (title, contents)
-    VALUES (?, ?)
-    `, [title, contents])
+    INSERT INTO workouts (exercise_id, set_count, rep_lb, rep_ub, split_day_id)
+    VALUES (?, ?, ?, ?, ?)
+    `, [exercise_id, set_count, rep_lb, rep_ub, split_day_id])
     const id = result.insertId;
     return getWorkout(id);
 };
+
+export async function getSplitDays(id) {
+    const [rows] = await pool.query(`
+    SELECT *
+    FROM split_days 
+    WHERE split_id = ?
+    `, [id]);
+    return rows;
+};
+
+export async function getExercise(exercise_id) {
+    const [rows] = await pool.query(`
+    SELECT *
+    FROM exercises
+    WHERE id = ?
+    `, [exercise_id]);
+    return rows[0];
+}
+
+export async function getExercises(user_id) {
+    const [rows] = await pool.query(`
+    SELECT *
+    FROM exercises
+    WHERE user_id = ?
+    `, [user_id]);   
+    return rows;
+};
+
+export async function postExercise(title, user_id) {
+    const [result] = await pool.query(`
+    INSERT INTO exercises (title, user_id)
+    VALUES (?, ?)
+    `, [title, user_id]);   
+    const exercise_id = result.insertId;
+    return getExercises(exercise_id);
+};
+       

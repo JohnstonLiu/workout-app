@@ -1,5 +1,5 @@
 import express from 'express';
-import {getWorkouts, getWorkout, postWorkout} from '../database.js';
+import {getWorkouts, postWorkout} from '../database.js';
 const router = express.Router();
 
 router.get('/', async (req, res) => {
@@ -8,9 +8,9 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/:id', async (req, res) => {
-    const id = req.params.id;
-    const workout = await getWorkout(id);
-    res.send(workout);
+    const split_day_id = req.params.id;
+    const workout = await getWorkouts(split_day_id);
+    res.status(200).send(workout);
 });
 
 router.post('/', async (req, res) => {
