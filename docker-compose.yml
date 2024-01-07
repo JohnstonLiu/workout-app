@@ -1,0 +1,59 @@
+version: "3.8"
+
+services:
+  mysql:
+    image:  mysql:8.2.0 
+    restart: always
+    environment:
+      MYSQL_DATABASE: "workout_app"
+      MYSQL_ROOT_PASSWORD: db_password
+    ports: 
+      - 3306:3306
+    networks:
+      - shared-network
+    volumes:
+      - ./mysql-db:/var/lib/mysql
+    healthcheck:
+        test: ["CMD-SHELL", 'mysqladmin ping']
+        interval: 30s
+        timeout: 10s
+        retries: 10
+    secrets:
+      - db_password
+
+  api:
+    container_name: workout_app_api
+    restart: unless-stopped
+    image: workout-app-api:1.0.0
+    build:
+      context: backend
+      target: production
+      dockerfile: Dockerfile
+    ports: 
+      - 4000:4000
+    networks:
+      - shared-network
+    depends_on:
+      - mysql
+
+  client:
+    container_name: workout_app_client
+    restart: unless-stopped
+    image: workout-app-client:1.0.0
+    build:
+      context: frontend 
+      target: production
+      dockerfile: Dockerfile
+    ports: 
+      - 3000:3000
+    networks:
+      - shared-network
+    depends_on:
+      - api
+
+networks:
+  shared-network:
+
+secrets:
+  db_password:
+    file: db_password.txt

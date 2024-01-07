@@ -79,12 +79,21 @@ export async function postWorkout(exercise_id, set_count, rep_lb, rep_ub, split_
     return getWorkout(id);
 };
 
-export async function getSplitDays(id) {
+export async function getSplitDay(id) {
+    const [rows] = await pool.query(`
+    SELECT *
+    FROM split_days 
+    WHERE id = ?
+    `, [id]);
+    return rows[0];
+};
+
+export async function getSplitDays(split_id) {
     const [rows] = await pool.query(`
     SELECT *
     FROM split_days 
     WHERE split_id = ?
-    `, [id]);
+    `, [split_id]);
     return rows;
 };
 

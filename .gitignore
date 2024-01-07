@@ -1,2 +1,5 @@
 .vscode
 *.sql
+db_password.txt
+.DS_Store
+mysql-db/

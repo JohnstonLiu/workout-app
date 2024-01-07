@@ -1,6 +1,8 @@
 import { initializeApp } from "firebase/app";
 //import { getAnalytics } from "firebase/analytics";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, signInWithPopup, setPersistence, browserSessionPersistence } from "firebase/auth";
+import dotenv from 'dotenv';
+dotenv.config();
 
 const firebaseConfig = {
   apiKey: "AIzaSyDk0O3hWhslWVM_b7lhSc6OOWQGefmozbk",
@@ -14,7 +16,9 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
-
+(async() => {
+    setPersistence(auth, browserSessionPersistence);
+})();
 const provider = new GoogleAuthProvider();
 
 export const signInWithGoogle = () => {
@@ -25,12 +29,14 @@ export const signInWithGoogle = () => {
         const email = result.user.email;
         const profilePic = result.user.profilePic;
 
-        localStorage.setItem("name", name);
-        localStorage.setItem("email", name);
-        localStorage.setItem("profilePic", profilePic);
-        localStorage.setItem("user_id", user_id);
+        const user = { name: email };
+        const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
     })
     .catch((error) => {
         console.log(error);
     });
 };
+
+const authenticateToken = (req, res, next) => {
+
+}
